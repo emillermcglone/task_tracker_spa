@@ -1,7 +1,7 @@
 // We need to import the CSS so that webpack will load it.
 // The MiniCssExtractPlugin is used to separate it out into
 // its own CSS file.
-import css from "../css/app.css"
+import css from "../css/app.scss"
 
 // webpack automatically bundles all modules in your
 // entry points. Those entry points can be configured
@@ -9,7 +9,11 @@ import css from "../css/app.css"
 //
 // Import dependencies
 //
-import "phoenix_html"
+import "phoenix_html";
+import jQuery from 'jquery';
+window.jQuery = window.$ = jQuery; // Bootstrap requires a global "$" object.
+import "bootstrap";
+import _ from "lodash";
 
 // Import local files
 //
@@ -17,3 +21,9 @@ import "phoenix_html"
 // paths "./socket" or full ones "web/static/js/socket".
 
 // import socket from "./socket"
+import root_init from "./root";
+
+$(() => {
+    let node = $('#root')[0];
+    root_init(node);
+});

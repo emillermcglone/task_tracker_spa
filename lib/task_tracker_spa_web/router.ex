@@ -15,12 +15,17 @@ defmodule TaskTrackerSpaWeb.Router do
 
   scope "/", TaskTrackerSpaWeb do
     pipe_through :browser # Use the default browser stack
+    resources "/tasks", TaskController
+    resources "/users", UserController
 
     get "/", PageController, :index
+    
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", TaskTrackerSpaWeb do
-  #   pipe_through :api
-  # end
+  scope "/api/v1", TaskTrackerSpaWeb do
+    pipe_through :api
+    resources "/users", UserController, except: [:new, :edit]
+    resources "/tasks", TaskController, except: [:new, :edit]
+  end
 end
