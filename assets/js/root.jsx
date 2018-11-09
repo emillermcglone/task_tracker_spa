@@ -297,6 +297,8 @@ function Header(props) {
 function TaskList(props) {
 
     let newTask = props.newTask;
+    let session = props.session;
+
 
     let newTitle = (ev) => {
         props.root.new_title(ev.target.value);
@@ -307,16 +309,18 @@ function TaskList(props) {
     };
 
     let newAssignedUser = (ev) => {
-        props.root.new_assigned_user(ev.target.value);
+        props.root.new_assigned_user(parseInt(ev.target.value));
     };
 
-    let userOption = (user) => {
-        return <option key={user.id} value={user.id}>{user.email}</option>;
+    let assignableUser = (user) => {
+        return user.id == session.user_id ?
+            <option key={user.id} value={user.id} selected>{user.email}</option>
+            :
+            <option key={user.id} value={user.id}>{user.email}</option>;
     };
 
-    let tasks = _.map(props.tasks, (tt) => <Task key={tt.id} task={tt} users={props.users} userOption={userOption} root={props.root} />);
+    let tasks = _.map(props.tasks, (tt) => <Task key={tt.id} task={tt} users={props.users} assignableUser={assignableUser} root={props.root} />);
     return <div>
-
         <div className="card">
             <h2 className="card-header">New Task</h2>
             <div className="card-body">
@@ -332,6 +336,7 @@ function TaskList(props) {
                     <div className="form-group">
                         <label>Assigned To</label>
                         <select type="text" className="form-control" id="newAssignedUser" onChange={newAssignedUser}>
+                            <option value="1">1</option>
                         </select>
                     </div>
                 </form>
@@ -373,20 +378,22 @@ function Task(props) {
 
                 <div className="form-group">
                     <label>Assign to</label>
-                    <select className="form-control" id="reassign" onChange={updateAssignedUser}>
+                    <select className="form-control" id="reassign" defaultValue={task.user_id} onChange={updateAssignedUser}>
                     </select>
                 </div>
                 <div className="form-group">
                     <label>Complete</label>
-                    <select className="form-control" id="complete" onChange={updateComplete}>
-                    </select>
+                    <input className="form-control" type="checkbox" id="complete" onChange={updateComplete}></input>
                 </div>
                 <div className="form-group">
                     <label>Enter Time:</label>
                     <input className="form-control" id="time" onChange={updateTime} />
                 </div>
             </form>
-            <button className="btn btn-primary" onClick={() => props.root.update_task()}>Update Task</button>
+            <div>
+                <button className="btn btn-primary" onClick={() => root.update_task(task.id)}>Update Task</button>
+                <button className="btn btn-primary" onClick={() => root.delete_task(task.id)}>Delete Task</button>
+            </div>
         </div>
     </div>;
 }
