@@ -37,6 +37,18 @@ defmodule TaskTrackerSpa.Users do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  def get_user_by_email(email) do
+    Repo.get_by(User, email: email)
+  end
+
+  def get_and_auth_user(email, password) do
+    user = get_user_by_email(email)
+    case Comeonin.Argon2.check_pass(user, password) do
+      {:ok, user} -> user
+      _else       -> nil
+    end
+  end
+
   @doc """
   Creates a user.
 
@@ -49,11 +61,14 @@ defmodule TaskTrackerSpa.Users do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_user(attrs \\ %{}) do
+  def create_user(%{"email" => email, "password_hash" => password}) do
+    pass = Argon2.hash_pwd_salt(password);
     %User{}
-    |> User.changeset(attrs)
+    |> User.changeset(%{"email" => email, "password_hash" => pass})
     |> Repo.insert()
   end
+
+
 
   @doc """
   Updates a user.

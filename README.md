@@ -1,3 +1,12 @@
+#Design 
+The user starts at a log in page where they can log in or make a new account. If they make a new account,
+the user must reload the page before they can log into the task tracker. 
+
+Users can create new tasks, edit tasks, and delete tasks. When setting the time for a task, only increments of 15 will be allowed. User's can view the other user accounts by clicking "Users" in the 
+header. They can switch back to the tasks page by clocking "Task Tracker" in the header. 
+
+Once finished, they can log out. 
+
 # TaskTrackerSpa
 
 To start your Phoenix server:
