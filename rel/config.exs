@@ -21,6 +21,16 @@ use Mix.Releases.Config,
 # an environment's settings will override those of a release
 # when building in that environment, this combination of release
 # and environment configuration is called a profile
+get_secret = fn name ->
+  base = Path.expand("~/.config/task_tracker_spa")
+  File.mkdir_p!(base)
+  path = Path.join(base, name)
+  unless File.exists?(path) do
+    secret = Base.encode16(:crypto.strong_rand_bytes(32))
+    File.write!(path, secret)
+  end
+  String.trim(File.read!(path))
+end
 
 environment :dev do
   # If you are running Phoenix, you should make sure that
@@ -31,13 +41,13 @@ environment :dev do
   # dev mode.
   set dev_mode: true
   set include_erts: false
-  set cookie: :"nB2cV;?Ch!t`3@A<640vgWFKy|[^;K[K<Z|NsuPQ@Yta5A(kA_EY(91G!E($3VLi"
+  set cookie: String.to_atom(get_secret.("dev_cookie"))
 end
 
 environment :prod do
   set include_erts: true
   set include_src: false
-  set cookie: :"NPeA[r)Is9Fh>0fq_]7fba@>W.hZ.H~GDfL`U:cLDml}ti%[q].Y*&<Tj`I.*&Aq"
+  set cookie: String.to_atom(get_secret.("prod_cookie"))
   set vm_args: "rel/vm.args"
 end
 
